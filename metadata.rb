@@ -7,7 +7,7 @@ description      'Installs/Configures a Chef handler for reporting results to a 
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.9.1'
 
-depends 'chef_handler', '~> 2.1.2'
+depends 'chef_handler'
 
 supports 'ubuntu'
 supports 'centos'

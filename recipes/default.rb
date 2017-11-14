@@ -24,7 +24,18 @@ if Chef::Config[:why_run]
   return
 end
 
-include_recipe "chef_handler"
+include_recipe 'chef_handler'
+
+directory 'Chef Handlers' do
+  path node['chef_handler']['handler_path']
+  unless platform?('windows')
+    owner node['root_user']
+    mode '0755'
+    recursive true
+  end
+  group node['root_group']
+  action :nothing
+end.run_action(:create)
 
 handler_file = ''
 handler_source = ''
