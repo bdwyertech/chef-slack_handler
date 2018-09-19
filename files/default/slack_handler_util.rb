@@ -35,7 +35,9 @@ class SlackHandlerUtil
   end
 
   def node_details(context = {})
-    "#{organization_details(context)}#{environment_details(context)}node #{node.name}"
+    role = run_status_role_detail(context)
+    role = role ? " role #{role}" : ''
+    "#{organization_details(context)}#{environment_details(context)}node #{node.name}#{role}"
   end
 
   def environment_details(context = {})
@@ -57,6 +59,17 @@ class SlackHandlerUtil
                   end
       " using cookbooks #{cookbooks.values.map { |x| x.name.to_s + ' ' + x.version }}"
     end
+  end
+
+  def run_status_role_detail(_context = {})
+    cookbooks = if Chef.respond_to?(:run_context)
+                  Chef.run_context.cookbook_collection
+                else
+                  run_context.cookbook_collection
+                end
+    roles = cookbooks.values.select { |x| x.name.to_s.downcase.end_with?('_role') }
+    roles.map { |x| x.name.to_s + ' ' + x.version }
+    return roles if roles.any?
   end
 
   def run_status_message_detail(context = {})
